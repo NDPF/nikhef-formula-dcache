@@ -1,0 +1,7 @@
+{%- from "dcache/map.jinja" import admin_data with context -%}
+{%- for user in users %}
+{%- if admin_data[user].public_keys is defined %}
+{%- for key in admin_data[user].public_keys %}{{ key }}
+{% endfor %}
+{%- endif %}
+{%- endfor %}
