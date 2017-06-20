@@ -1,0 +1,14 @@
+{%- set dcache = salt['grains.filter_by']({
+    'default': {
+        'enabled': False,
+        'pkgs': [ 'dcache', 'java-1.8.0-openjdk' ],
+        'service': 'dcache',
+        'user': 'dcache',
+        'group': 'root',
+        'conf_dir': '/etc/dcache',
+    },
+}, merge=salt['pillar.get']('dcache')) %}
+
+
+{%- set admin_data = salt['pillar.get'](dcache.admin_data_pillar) %}
+{%- set user_data = salt['pillar.get'](dcache.user_data_pillar) %}

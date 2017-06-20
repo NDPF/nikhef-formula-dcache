@@ -1,0 +1,11 @@
+{%- from "dcache/map.jinja" import admin_data with context -%}
+version 2.1
+{% for user in users %}
+{%- if admin_data[user].cert_dns is defined and admin_data[user].uid is defined %}
+{%- for dn in admin_data[user].cert_dns %}
+mapping  "{{ dn }}"  {{ user }}
+login  {{ user }}  read-write  {{ admin_data[user].uid }}  0  /  /  /
+  {{ dn }}
+{% endfor %}
+{%- endif %}
+{%- endfor %}
