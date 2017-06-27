@@ -4,12 +4,12 @@ dcache_packages:
   pkg.installed:
   - names: {{ dcache.pkgs }}
 
-#dcache_service:
-#  service.running:
-#  - enable: true
-#  - name: {{ dcache.service }}
-#  - watch:
-#    - pkg: dcache_packages
+dcache_service:
+  service.running:
+  - enable: true
+  - name: {{ dcache.service }}
+  - watch:
+    - pkg: dcache_packages
 
 dcache_conf:
   file.managed:
@@ -19,8 +19,8 @@ dcache_conf:
   - user: {{ dcache.user }}
   - group: {{ dcache.group }}
   - mode: 640
-#  - watch_in:
-#    - service: dcache_service
+  - watch_in:
+    - service: dcache_service
 
 dcache_layout_conf:
   file.managed:
@@ -30,8 +30,8 @@ dcache_layout_conf:
   - user: {{ dcache.user }}
   - group: {{ dcache.group }}
   - mode: 640
-#  - watch_in:
-#    - service: dcache_service
+  - watch_in:
+    - service: dcache_service
 
 {%- if dcache.authorized_keys2 is defined and dcache.authorized_keys2|length > 1 %}
 dcache_authorized_keys2:
@@ -44,8 +44,8 @@ dcache_authorized_keys2:
   - mode: 640
   - defaults:
       users: {{ dcache.authorized_keys2 }}
-#  - watch_in:
-#    - service: dcache_service
+  - watch_in:
+    - service: dcache_service
 {%- endif %}
 
 {%- for key, lines in dcache.gplazma.iteritems() %}
@@ -65,8 +65,8 @@ dcache_gplazma_{{ key }}_file:
   - mode: 640
   - defaults:
       lines: {{ lines }}
-#  - watch_in:
-#    - service: dcache_service
+  - watch_in:
+    - service: dcache_service
 {%- endfor %}
 
 {%- for key, data in dcache.kpwd.iteritems() %}
@@ -80,6 +80,18 @@ dcache_{{ key }}_kpwd_file:
   - mode: 640
   - defaults:
       users: {{ data.users }}
-#  - watch_in:
-#    - service: dcache_service
+  - watch_in:
+    - service: dcache_service
+{%- endfor %}
+
+{%- for name in dcache.databases %}
+dcache_setup_database_{{ name }}:
+  cmd.run:
+  - name: dcache database update
+  - onchanges:
+{%- for db in dcache.databases %}
+      - postgres_database: postgresql_database_localhost_{{ db }}
+{%- endfor %}
+  - watch_in:
+    - service: dcache_service
 {%- endfor %}
