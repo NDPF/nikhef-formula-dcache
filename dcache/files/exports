@@ -1,0 +1,2 @@
+{%- from "dcache/map.jinja" import dcache with context -%}
+/dcache {{ dcache.nfs_exports }}

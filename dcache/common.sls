@@ -30,10 +30,8 @@ dcache_layout_conf:
   - user: {{ dcache.user }}
   - group: {{ dcache.group }}
   - mode: 640
-  - watch_in:
-    - service: dcache_service
 
-{%- if dcache.authorized_keys2 is defined and dcache.authorized_keys2|length > 1 %}
+{%- if dcache.authorized_keys2 is defined %}
 dcache_authorized_keys2:
   file.managed:
   - name: {{ dcache.conf_dir }}/admin/authorized_keys2
@@ -48,7 +46,7 @@ dcache_authorized_keys2:
     - service: dcache_service
 {%- endif %}
 
-{%- for key, lines in dcache.gplazma.iteritems() %}
+{%- for key, lines in dcache.get('gplazma', {}).iteritems() %}
 {%- if key == 'default' %}
 {%- set name = 'gplazma' %}
 {%- else %}
@@ -69,7 +67,7 @@ dcache_gplazma_{{ key }}_file:
     - service: dcache_service
 {%- endfor %}
 
-{%- for key, data in dcache.kpwd.iteritems() %}
+{%- for key, data in dcache.get('kpwd', {}).iteritems() %}
 dcache_{{ key }}_kpwd_file:
   file.managed:
   - name: {{ dcache.conf_dir }}/{{ key }}.kpwd
@@ -84,7 +82,7 @@ dcache_{{ key }}_kpwd_file:
     - service: dcache_service
 {%- endfor %}
 
-{%- for name in dcache.databases %}
+{%- for name in dcache.get('databases', []) %}
 dcache_setup_database_{{ name }}:
   cmd.run:
   - name: dcache database update
@@ -95,3 +93,14 @@ dcache_setup_database_{{ name }}:
   - watch_in:
     - service: dcache_service
 {%- endfor %}
+
+{%- if dcache.nfs_exports is defined %}
+dcache_nfs_exports:
+  file.managed:
+  - name: /etc/exports
+  - source: salt://dcache/files/exports
+  - template: jinja
+  - user: root
+  - group: root
+  - mode: 644
+{%- endif %}
