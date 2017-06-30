@@ -86,6 +86,8 @@ dcache_{{ key }}_kpwd_file:
 dcache_setup_database_{{ name }}:
   cmd.run:
   - name: dcache database update
+  - require:
+    - pkg: dcache_packages
   - onchanges:
 {%- for db in dcache.databases %}
       - postgres_database: postgresql_database_localhost_{{ db }}
@@ -103,4 +105,15 @@ dcache_nfs_exports:
   - user: root
   - group: root
   - mode: 644
+{%- endif %}
+
+{%- if dcache.pool_setup %}
+{%- for pool in dcache.get('pools', []) %}
+dcache_setup_pool_{{ pool.name }}:
+  cmd.run:
+  - name: dcache pool create {{ pool.dir }}/{{ pool.name }} {{ pool.name }} {{ pool.name }}Domain
+  - onlyif: "test `test -d '{{ pool.dir }}/{{ pool.name }}' >/dev/null;echo $?` -eq 1"
+  - require:
+    - pkg: dcache_packages
+{%- endfor %}
 {%- endif %}
