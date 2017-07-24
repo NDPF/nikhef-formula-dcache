@@ -1,0 +1,10 @@
+{%- from "dcache/map.jinja" import dcache, admin_data, user_data with context -%}
+version 2.1
+
+{%- for user in dcache.remote_users %}
+{%- if admin_data[user] is defined and admin_data[user].uid is defined and admin_data[user].gid is defined %}
+authorize  {{ user.rjust(10) }}   read-write  {{ admin_data[user].uid }}  {{ admin_data[user].gid }}   /  /  /
+{%- elif user_data[user] is defined and user_data[user].uid is defined and user_data[user].gid is defined %}
+authorize  {{ user.rjust(10) }}   read-write  {{ user_data[user].uid }}  {{ user_data[user].gid }}   /  /  /
+{%- endif %}
+{%- endfor %}

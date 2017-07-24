@@ -107,6 +107,26 @@ dcache_nfs_exports:
   - mode: 644
 {%- endif %}
 
+{%- if dcache.remote_users is defined %}
+dcache_mapfile:
+  file.managed:
+  - name: {{ dcache.conf_dir }}/mapfile
+  - source: salt://dcache/files/mapfile
+  - template: jinja
+  - user: root
+  - group: root
+  - mode: 644
+
+dcache_authzdb:
+  file.managed:
+  - name: {{ dcache.conf_dir }}/authzdb
+  - source: salt://dcache/files/authzdb
+  - template: jinja
+  - user: root
+  - group: root
+  - mode: 644
+{%- endif %}
+
 {%- if dcache.pool_setup %}
 {%- for pool in dcache.get('pools', []) %}
 dcache_setup_pool_{{ pool.name }}:
