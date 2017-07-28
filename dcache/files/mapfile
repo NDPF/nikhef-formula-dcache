@@ -3,9 +3,9 @@
 {%- for user in dcache.remote_users -%}
 {%- if admin_data[user] is defined and admin_data[user].cert_dns is defined -%}
 {%- for dn in admin_data[user].cert_dns %}"{{ dn }}" {{ user }}{% if not loop.last %}{{ '\n' }}{% endif %}{% endfor -%}
-{%- if not loop.last %}{{ 'q\n' }}{% endif %}
+{%- if not loop.last %}{{ '\n' }}{% endif %}
 {%- elif user_data[user] is defined and user_data[user].cert_dns is defined -%}
 {%- for dn in user_data[user].cert_dns -%}"{{ dn }}" {{ user }}{% if not loop.last %}{{ '\n' }}{% endif %}{% endfor -%}
-{%- if not loop.last %}{{ 'q\n' }}{% endif %}
+{%- if not loop.last %}{{ '\n' }}{% endif %}
 {%- endif -%}
 {%- endfor -%}
