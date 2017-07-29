@@ -42,8 +42,6 @@ dcache_authorized_keys2:
   - mode: 640
   - defaults:
       users: {{ dcache.authorized_keys2 }}
-  - watch_in:
-    - service: dcache_service
 {%- endif %}
 
 {%- for key, lines in dcache.get('gplazma', {}).iteritems() %}
@@ -136,4 +134,41 @@ dcache_setup_pool_{{ pool.name }}:
   - require:
     - pkg: dcache_packages
 {%- endfor %}
+{%- endif %}
+
+{%- if dcache.graphite_monitoring|default(False) %}
+dcache_graphite_metrics_packages:
+  pkg.installed:
+  - names:
+      - pexpect
+
+dcache_graphite_metrics:
+  file.managed:
+  - name: /opt/metrics/dcache-metrics.py
+  - source: salt://dcache/files/dcache-metrics.py
+  - makedirs: true
+  - template: jinja
+  - user: root
+  - group: root
+  - mode: 755
+  - require:
+    - pkg: dcache_graphite_metrics_packages
+
+dcache_graphite_metrics_cronjob:
+  file.managed:
+  - name: /etc/cron.d/dcache-metrics
+  - source: salt://dcache/files/cron-template
+  - makedirs: true
+  - template: jinja
+  - user: root
+  - group: root
+  - mode: 644
+  - defaults:
+     cronjob:
+       minute: '*/1'
+       printdate: false
+       cmd: /opt/metrics/dcache-metrics.py
+  - require:
+    - file: dcache_graphite_metrics
+
 {%- endif %}
