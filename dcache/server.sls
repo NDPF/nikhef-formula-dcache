@@ -172,3 +172,37 @@ dcache_graphite_metrics_cronjob:
     - file: dcache_graphite_metrics
 
 {%- endif %}
+
+{%- if dcache.billing is defined %}
+
+{%- if dcache.billing.gzip_files|default(False) %}
+  file.managed:
+  - name: /var/lib/dcache/billing/gzip-billing-files
+  - source: salt://dcache/files/gzip-billing-files
+  - template: jinja
+  - mode: 755
+  - required:
+    - pkg: dcache_packages
+
+dcache_gzip_billing_cronjob:
+  file.managed:
+  - name: /etc/cron.d/dcache-gzip-billing-files
+  - source: salt://dcache/files/cron-template
+  - makedirs: true
+  - template: jinja
+  - user: root
+  - group: root
+  - mode: 644
+  - defaults:
+     cronjob:
+       minute: '47'
+       hour: '01'
+       printdate: false
+       cmd: /var/lib/dcache/billing/gzip-billing-files
+{%- else %}
+dcache_gzip_billing_cronjob:
+  file.absent:
+  - name: /etc/cron.d/dcache-gzip-billing-files
+{%- endif %}
+
+{%- endif %}

@@ -1,4 +1,5 @@
 {%- if pillar.dcache is defined %}
 include:
-- dcache.common
+- dcache.server
+
 {%- endif %}

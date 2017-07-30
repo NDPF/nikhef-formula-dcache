@@ -1,0 +1,21 @@
+#!/bin/bash
+
+BILLING_DIR=/var/lib/dcache/billing
+
+files=$( find ${BILLING_DIR} -name "billing-????.??.??" -print )
+today_file=billing-$( date +%Y.%m.%d )
+
+files_to_zip=""
+for f in ${files}
+do
+    n=$( basename ${f} )
+    if [ "${today_file}" != "${n}" ]
+    then
+        files_to_zip=${files_to_zip}" "${f}
+    fi
+done
+
+for f in ${files_to_zip}
+do
+    gzip ${f}
+done
