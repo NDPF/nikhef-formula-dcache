@@ -334,7 +334,7 @@ class NFSDoorInfo:
         self.reads = 0
         self.writes = 0
         for i in transfers:
-            type = getElement(i, 2)
+            type = getElement(i, 4)
             if (type == "READ"):
                 self.reads += 1
             elif (type == "WRITE"):
