@@ -6,4 +6,8 @@ include:
 - dcache.logstash
 {%- endif %}
 
+{%- if pillar.dcache.graphite_monitoring is defined %}
+- dcache.graphite
+{%- endif %}
+
 {%- endif %}
