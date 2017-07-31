@@ -10,6 +10,10 @@ dcache_service:
   - name: {{ dcache.service }}
   - watch:
     - pkg: dcache_packages
+{%- if dcache.pools is defined %}
+{%- set pool = dcache.pools[0] %}
+  - onlyif: "test `test -d '{{ pool.dir }}/{{ pool.name }}' >/dev/null;echo $?` -eq 0"
+{%- endif %}
 
 dcache_conf:
   file.managed:
