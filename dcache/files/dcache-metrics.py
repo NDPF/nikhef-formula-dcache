@@ -51,8 +51,6 @@ class PoolInfo:
         self.name = ""
         self.restore_queued = -1
         self.restore_active = -1
-        self.mover_queued = -1
-        self.mover_active = -1
         self.regular_queued = -1
         self.regular_active = -1
         self.p2p_client_active = -1
@@ -90,9 +88,6 @@ class PoolInfo:
             if (type == "restore"):
                 self.restore_queued = queued
                 self.restore_active = active
-            elif (type == "mover"):
-                self.mover_queued = queued
-                self.mover_active = active
             elif (type == "regular"):
                 self.regular_queued = queued
                 self.regular_active = active
@@ -141,10 +136,6 @@ class PoolInfo:
             self.metric_readerrors += 1
         if (self.restore_active == -1):
             self.metric_readerrors += 1
-        if (self.mover_queued == -1):
-            self.metric_readerrors += 1
-        if (self.mover_active == -1):
-            self.metric_readerrors += 1
         if (self.regular_queued == -1):
             self.metric_readerrors += 1
         if (self.regular_active == -1):
@@ -180,10 +171,6 @@ class PoolInfo:
             metrics.append(Metric('dcache.pool.' + self.name + '.queue.restore.queued', self.restore_queued, self.timestamp))
         if (self.restore_active >= 0):
             metrics.append(Metric('dcache.pool.' + self.name + '.queue.restore.active', self.restore_active, self.timestamp))
-        if (self.mover_queued >= 0):
-            metrics.append(Metric('dcache.pool.' + self.name + '.queue.mover.queued', self.mover_queued, self.timestamp))
-        if (self.mover_active >= 0):
-            metrics.append(Metric('dcache.pool.' + self.name + '.queue.mover.active', self.mover_active, self.timestamp))
         if (self.regular_queued >= 0):
             metrics.append(Metric('dcache.pool.' + self.name + '.queue.regular.queued', self.regular_queued, self.timestamp))
         if (self.regular_active >= 0):
@@ -221,8 +208,6 @@ class PoolGroupInfo:
         self.pools = []
         self.restore_queued = -1
         self.restore_active = -1
-        self.mover_queued = -1
-        self.mover_active = -1
         self.regular_queued = -1
         self.regular_active = -1
         self.p2p_client_active = -1
@@ -251,8 +236,6 @@ class PoolGroupInfo:
 
         self.restore_queued = self.sum(poolInfo, 'restore_queued')
         self.restore_active = self.sum(poolInfo, 'restore_active')
-        self.mover_queued = self.sum(poolInfo, 'mover_queued')
-        self.mover_active = self.sum(poolInfo, 'mover_active')
         self.regular_queued = self.sum(poolInfo, 'regular_queued')
         self.regular_active = self.sum(poolInfo, 'regular_active')
         self.p2p_client_active = self.sum(poolInfo, 'p2p_client_active')
@@ -274,10 +257,6 @@ class PoolGroupInfo:
             metrics.append(Metric('dcache.pgroup.' + self.name + '.queue.restore.queued', self.restore_queued, self.timestamp))
         if (self.restore_active >= 0):
              metrics.append(Metric('dcache.pgroup.' + self.name + '.queue.restore.active', self.restore_active, self.timestamp))
-        if (self.mover_queued >= 0):
-            metrics.append(Metric('dcache.pgroup.' + self.name + '.queue.mover.queued', self.mover_queued, self.timestamp))
-        if (self.mover_active >= 0):
-            metrics.append(Metric('dcache.pgroup.' + self.name + '.queue.mover.active', self.mover_active, self.timestamp))
         if (self.regular_queued >= 0):
             metrics.append(Metric('dcache.pgroup.' + self.name + '.queue.regular.queued', self.regular_queued, self.timestamp))
         if (self.regular_active >= 0):
