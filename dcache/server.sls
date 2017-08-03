@@ -137,6 +137,17 @@ dcache_setup_pool_{{ pool.name }}:
   - onlyif: "test `test -d '{{ pool.dir }}/{{ pool.name }}' >/dev/null;echo $?` -eq 1"
   - require:
     - pkg: dcache_packages
+  - require_in:
+    - file: dcache_layout_conf
+
+dcache_pool_setup_{{ pool.name }}:
+  file.managed:
+  - name: {{ pool.dir }}/{{ pool.name }}/setup
+  - source: salt://dcache/files/pool-setup
+  - template: jinja
+  - mode: 644
+  - required:
+    - pkg: dcache_packages
 {%- endfor %}
 {%- endif %}
 

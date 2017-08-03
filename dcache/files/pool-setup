@@ -1,0 +1,29 @@
+csm set checksumtype ADLER32
+csm set policy -scrub=off
+csm set policy -onread=off -onwrite=off -onflush=off -onrestore=on -enforcecrc=on -getcrcfromhsm=off
+#
+# Flushing Thread setup
+#
+flush set max active 1000
+flush set interval 60
+flush set retry delay 60
+mover queue create regular -order=LIFO
+mover queue create p2p -order=LIFO
+mover set max active -queue=regular 10000
+mover set max active -queue=p2p 10
+jtm set timeout -queue=regular -lastAccess=0 -total=0
+jtm set timeout -queue=p2p -lastAccess=0 -total=0
+#
+# MigrationModule
+#
+set heartbeat 30
+set report remove on
+set breakeven 0.7
+set mover cost factor 0.5
+set duplicate request none
+#
+#  Pool to Pool (P2P)
+#
+rh set timeout 14400
+st set timeout 14400
+rm set timeout 14400
