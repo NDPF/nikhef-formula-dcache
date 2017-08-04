@@ -139,6 +139,8 @@ dcache_setup_pool_{{ pool.name }}:
     - pkg: dcache_packages
   - require_in:
     - file: dcache_layout_conf
+  - require_in:
+    - service: dcache_service
 
 dcache_pool_setup_{{ pool.name }}:
   file.managed:
@@ -148,6 +150,8 @@ dcache_pool_setup_{{ pool.name }}:
   - mode: 644
   - required:
     - pkg: dcache_packages
+  - require_in:
+    - service: dcache_service
 {%- endfor %}
 {%- endif %}
 
