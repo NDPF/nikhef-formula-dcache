@@ -131,7 +131,7 @@ dcache_authzdb:
 
 {%- if dcache.pool_setup %}
 {%- for pool in dcache.get('pools', []) %}
-dcache_setup_pool_{{ pool.name }}:
+dcache_pool_create_{{ pool.name }}:
   cmd.run:
   - name: dcache pool create {{ pool.dir }}/{{ pool.name }} {{ pool.name }} {{ pool.name }}Domain
   - onlyif: "test `test -d '{{ pool.dir }}/{{ pool.name }}' >/dev/null;echo $?` -eq 1"
@@ -142,7 +142,7 @@ dcache_setup_pool_{{ pool.name }}:
   - require_in:
     - service: dcache_service
 
-dcache_pool_setup_{{ pool.name }}:
+dcache_pool_config_{{ pool.name }}:
   file.managed:
   - name: {{ pool.dir }}/{{ pool.name }}/setup
   - source: salt://dcache/files/pool-setup
@@ -150,6 +150,7 @@ dcache_pool_setup_{{ pool.name }}:
   - mode: 644
   - required:
     - pkg: dcache_packages
+    - cmd: dcache_pool_create_{{ pool.name }}
   - require_in:
     - service: dcache_service
 {%- endfor %}
