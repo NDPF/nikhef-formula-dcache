@@ -1,7 +1,20 @@
-{%- from "dcache/map.jinja" import admin_data with context -%}
-{%- for user in users %}
-{%- if admin_data[user].public_keys is defined %}
-{%- for key in admin_data[user].public_keys %}{{ key }}
-{% endfor %}
-{%- endif %}
-{%- endfor %}
+{%- from "dcache/map.jinja" import admin_data, public_keys with context -%}
+
+{%- macro write_public_keys(keys) -%}
+{%- if keys is not string and keys is iterable -%}
+{%- for key in keys -%}
+{%- if not loop.first %}{{ '\n' }}{% endif %}{{- key -}}
+{%- endfor -%}
+{%- else -%}
+{{ keys }}
+{%- endif -%}
+{%- endmacro -%}
+
+{%- macro write_user(user) -%}
+{%- if admin_data.get(user, {}).get('public_keys', none) is not none %}{{ write_public_keys(admin_data[user].public_keys) }}{% endif %}
+{%- if public_keys.get(user, none) is not none %}{{ write_public_keys(public_keys[user]) }}{% endif %}
+{%- endmacro -%}
+
+{%- for user in users -%}
+{%- if not loop.first %}{{ '\n' }}{% endif %}{{- write_user(user) -}}
+{%- endfor -%}
