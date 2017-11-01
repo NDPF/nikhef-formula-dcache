@@ -65,8 +65,6 @@ dcache_gplazma_{{ key }}_file:
   - mode: 640
   - defaults:
       lines: {{ lines }}
-  - watch_in:
-    - service: dcache_service
 {%- endfor %}
 
 {%- for key, data in dcache.get('kpwd', {}).iteritems() %}
@@ -80,8 +78,6 @@ dcache_{{ key }}_kpwd_file:
   - mode: 640
   - defaults:
       users: {{ data.users }}
-  - watch_in:
-    - service: dcache_service
 {%- endfor %}
 
 {%- for name in dcache.get('databases', []) %}
