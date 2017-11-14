@@ -19,19 +19,11 @@ dcache_graphite_metrics:
     - pkg: dcache_graphite_metrics_packages
 
 dcache_graphite_metrics_cronjob:
-  file.managed:
-  - name: /etc/cron.d/dcache-metrics
-  - source: salt://dcache/files/cron-template
-  - makedirs: true
-  - template: jinja
-  - user: root
-  - group: root
-  - mode: 644
-  - defaults:
-     cronjob:
-       minute: '*/1'
-       printdate: false
-       cmd: /opt/metrics/dcache-metrics.py
+  crontab.crond:
+  - name: dcache-metrics
+  - minute: '*/1'
+  - printdate: false
+  - cmd: /opt/metrics/dcache-metrics.py
   - require:
     - file: dcache_graphite_metrics
 {%- endif %}

@@ -164,21 +164,13 @@ dcache_pool_config_{{ pool.name }}:
   - required:
     - pkg: dcache_packages
 
-dcache_gzip_billing_cronjob:
-  file.managed:
-  - name: /etc/cron.d/dcache-gzip-billing-files
-  - source: salt://dcache/files/cron-template
-  - makedirs: true
-  - template: jinja
-  - user: root
-  - group: root
-  - mode: 644
-  - defaults:
-     cronjob:
-       minute: '47'
-       hour: '01'
-       printdate: false
-       cmd: /var/lib/dcache/billing/gzip-billing-files
+dcache_graphite_metrics_cronjob:
+  crontab.crond:
+  - name: dcache-gzip-billing-files
+  - minute: '47'
+  - hour: '01'
+  - printdate: false
+  - cmd: /var/lib/dcache/billing/gzip-billing-files
 {%- else %}
 dcache_gzip_billing_cronjob:
   file.absent:
