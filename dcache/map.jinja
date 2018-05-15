@@ -8,7 +8,7 @@
         'conf_dir': '/etc/dcache',
         'logstash_dir': '/etc/logstash',
     },
-}, merge=salt['pillar.get']('dcache')) %}
+}, merge=salt['pillar.get']('dcache'), base='default') %}
 
 {%- set admin_data = salt['pillar.get'](dcache.admin_data_pillar) %}
 {%- set user_data = salt['pillar.get'](dcache.user_data_pillar) %}
