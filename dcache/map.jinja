@@ -1,12 +1,14 @@
 {%- set dcache = salt['grains.filter_by']({
     'default': {
         'enabled': False,
-        'pkgs': [ 'dcache', 'java-1.8.0-openjdk' ],
         'service': 'dcache-server',
         'user': 'dcache',
         'group': 'root',
         'conf_dir': '/etc/dcache',
         'logstash_dir': '/etc/logstash',
+    },
+    'RedHat': {
+        'pkgs': [ 'dcache', 'java-1.8.0-openjdk' ],
     },
 }, merge=salt['pillar.get']('dcache'), base='default') %}
 
